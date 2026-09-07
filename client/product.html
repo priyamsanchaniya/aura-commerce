@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura | Product</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp .4s ease-out; }
+        .pulse-dot { animation: pulseDot 2s infinite; }
+        @keyframes pulseDot { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-3">
+            <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">AURA</span>
+            <span class="text-xs text-slate-500">/ Product</span>
+        </a>
+        <a href="index.html" class="text-sm text-slate-400 hover:text-white flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Back to Shop
+        </a>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-6 py-10">
+
+    <!-- PRODUCT HERO -->
+    <div class="grid lg:grid-cols-2 gap-10 mb-12">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden">
+            <img id="p-image" src="" class="w-full h-[420px] object-cover" />
+        </div>
+
+        <div>
+            <div class="flex items-center gap-2 mb-3">
+                <span id="p-co2" class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2.5 py-1 rounded-full"></span>
+                <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-2.5 py-1 rounded-full">
+                    <i class="fa-solid fa-shield-halved"></i> Digital Passport Included
+                </span>
+            </div>
+
+            <h1 id="p-name" class="text-3xl font-extrabold mb-3"></h1>
+
+            <!-- LOCAL RATING SUMMARY -->
+            <div id="rating-summary" class="flex items-center gap-3 mb-5 text-sm">
+                <span class="text-slate-500">Loading neighbourhood ratings…</span>
+            </div>
+
+            <p id="p-desc" class="text-slate-400 leading-relaxed mb-6"></p>
+
+            <p class="text-4xl font-extrabold text-white mb-1">$<span id="p-price"></span></p>
+            <p id="rent-credit-line" class="hidden text-sm text-emerald-400 mb-4"></p>
+
+            <!-- ACTIVE RENTAL BANNER -->
+            <div id="rental-banner" class="hidden bg-emerald-950/40 border border-emerald-700/50 rounded-2xl p-4 mb-5 fade-up">
+                <p class="font-bold text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-box-open"></i> You're currently renting this
+                </p>
+                <p id="rental-details" class="text-sm text-slate-300 mt-1"></p>
+            </div>
+
+            <div class="space-y-3 mt-6">
+                <button onclick="addToGroupCart()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 py-3.5 rounded-xl font-bold hover:opacity-95 transition shadow-lg shadow-emerald-500/25">
+                    <i class="fa-solid fa-cart-shopping"></i> Add to Group Cart
+                </button>
+
+                <button id="rent-btn" onclick="openRentModal()" class="w-full bg-slate-800 border border-slate-600 text-white py-3.5 rounded-xl font-bold hover:border-emerald-500 hover:text-emerald-400 transition">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Rent 3 Days — $<span id="rent-fee-label"></span>
+                </button>
+
+                <p class="text-xs text-slate-500 text-center">
+                    <i class="fa-solid fa-circle-info text-emerald-400"></i>
+                    Rent fee is <strong class="text-emerald-400">100% deducted</strong> if you buy within 7 days.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HYPERLOCAL REVIEWS -->
+    <section class="bg-slate-900 border border-slate-800 rounded-3xl p-7">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+            <div>
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-emerald-400"></i> Peer-Verified Neighbourhood Reviews
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Real opinions from verified buyers around you — not strangers across the world.</p>
+            </div>
+            <div id="loc-chip" class="text-xs bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl text-slate-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-yellow-400 pulse-dot"></span> Detecting your location…
+            </div>
+        </div>
+
+        <!-- FILTER PILLS -->
+        <div class="flex gap-2 mb-6">
+            <button id="pill-local" onclick="setFilter('local')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 transition">
+                Within 5 km (<span id="count-local">0</span>)
+            </button>
+            <button id="pill-all" onclick="setFilter('all')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 text-slate-400 hover:text-white transition">
+                All reviews (<span id="count-all">0</span>)
+            </button>
+        </div>
+
+        <div id="reviews-list" class="space-y-4 mb-8">
+            <p class="text-slate-500 text-sm">Loading reviews…</p>
+        </div>
+
+        <!-- WRITE REVIEW -->
+        <div class="border-t border-slate-800 pt-6">
+            <h3 class="font-bold mb-4"><i class="fa-regular fa-pen-to-square text-emerald-400"></i> Share your experience</h3>
+            <div class="flex gap-1 mb-3" id="star-picker"></div>
+            <textarea id="review-text" rows="3" placeholder="How was it? Your neighbours are listening…"
+                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-emerald-500 transition mb-3"></textarea>
+            <button onclick="submitReview()" class="bg-emerald-500 text-slate-950 px-5 py-2.5 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
+                Post Verified Review
+            </button>
+            <p id="review-msg" class="hidden text-sm mt-3"></p>
+        </div>
+    </section>
+</main>
+
+<!-- RENT MODAL -->
+<div id="rent-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-md w-full fade-up">
+        <h2 class="text-2xl font-bold mb-2"><i class="fa-solid fa-clock-rotate-left text-emerald-400"></i> Try Before You Buy</h2>
+        <p class="text-slate-400 text-sm mb-6">Live with the product for 3 days. Love it? The rent becomes your discount.</p>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3 text-sm mb-6">
+            <div class="flex justify-between"><span class="text-slate-400">Product</span><span id="modal-name" class="font-semibold text-right"></span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Rental period</span><span>3 days</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Rental fee</span><span class="text-emerald-400 font-bold">$<span id="modal-fee"></span></span></div>
+            <div class="border-t border-slate-800 pt-3 flex justify-between">
+                <span class="text-slate-400">If you buy within 7 days</span>
+                <span class="text-emerald-400 font-bold">− $<span id="modal-credit"></span> off</span>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="closeRentModal()" class="flex-1 bg-slate-800 border border-slate-700 py-3 rounded-xl font-bold hover:bg-slate-700 transition">Cancel</button>
+            <button onclick="confirmRental()" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 py-3 rounded-xl font-bold hover:opacity-95 transition">Confirm Rental</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===== CONFIG — change this ONE line when you switch to ngrok/render ===== */
+const BACKEND_URL = "http://localhost:5000";
+
+/* ===== PRODUCTS ===== */
+const PRODUCTS = [
+    { id:1, name:"Aura Noise-Canceling Headphones", price:199.99, co2:"2.1 kg", rentable:true,
+      image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&q=80",
+      desc:"Studio-grade 40mm drivers, adaptive ANC and 45-hour battery. Built from 68% recycled aluminium with a repairability score of 8/10." },
+    { id:2, name:"EcoSmart Solar Power Bank", price:49.99, co2:"0.8 kg", rentable:false,
+      image:"https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=900&q=80",
+      desc:"20,000mAh with monocrystalline solar panel and 22.5W fast charging. Charges fully from sunlight in 6 hours." },
+    { id:3, name:"Ergonomic Bamboo Workspace Chair", price:289.00, co2:"5.4 kg", rentable:true,
+      image:"https://images.unsplash.com/photo-1580481072645-022f9a6d83d0?w=900&q=80",
+      desc:"FSC-certified bamboo frame, 4D armrests and lumbar mesh. Ships flat-packed to cut shipping emissions by 40%." }
+];
+
+const params = new URLSearchParams(location.search);
+const productId = parseInt(params.get('id')) || 1;
+const product = PRODUCTS.find(p => p.id === productId) || PRODUCTS[0];
+const user = JSON.parse(localStorage.getItem('aura_user')) || { name:"Guest", email:"guest@aura.shop" };
+
+let userLat = null, userLng = null;
+let allReviews = [], filterMode = 'local', selectedRating = 5;
+const rentFee = +(product.price * 0.08).toFixed(2);
+
+/* ===== RENDER PRODUCT ===== */
+document.getElementById('p-image').src = product.image;
+document.getElementById('p-name').innerText = product.name;
+document.getElementById('p-desc').innerText = product.desc;
+document.getElementById('p-price').innerText = product.price.toFixed(2);
+document.getElementById('p-co2').innerHTML = `<i class="fa-solid fa-leaf"></i> CO₂: ${product.co2}`;
+document.getElementById('rent-fee-label').innerText = rentFee.toFixed(2);
+if (!product.rentable) {
+    const b = document.getElementById('rent-btn');
+    b.disabled = true; b.className = "w-full bg-slate-900 border border-slate-800 text-slate-600 py-3.5 rounded-xl font-bold cursor-not-allowed";
+    b.innerHTML = '<i class="fa-solid fa-ban"></i> Rental not available for this item';
+}
+
+/* ===== STAR PICKER ===== */
+function renderStars() {
+    document.getElementById('star-picker').innerHTML = [1,2,3,4,5].map(n =>
+        `<button onclick="selectedRating=${n};renderStars()" class="text-2xl ${n<=selectedRating?'text-yellow-400':'text-slate-700'} hover:scale-110 transition">★</button>`
+    ).join('');
+}
+renderStars();
+
+/* ===== LOCATION ===== */
+function initLocation() {
+    const chip = document.getElementById('loc-chip');
+    if (!navigator.geolocation) return useDemoLocation();
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+            chip.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span class="text-emerald-400 font-semibold">Location verified</span> · GPS`;
+            chip.className = "text-xs bg-emerald-950/50 border border-emerald-700/50 px-3 py-2 rounded-xl text-slate-300 flex items-center gap-2";
+            loadReviews();
+        },
+        () => useDemoLocation()
+    );
+}
+function useDemoLocation() {
+    userLat = 22.3039; userLng = 70.8022; // demo city centre
+    const chip = document.getElementById('loc-chip');
+    chip.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400"></span> Demo location active`;
+    chip.className = "text-xs bg-cyan-950/40 border border-cyan-700/40 px-3 py-2 rounded-xl text-slate-300 flex items-center gap-2";
+    loadReviews();
+}
+
+/* ===== REVIEWS ===== */
+async function loadReviews() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/reviews?productId=${product.id}&lat=${userLat}&lng=${userLng}`);
+        const data = await res.json();
+        allReviews = data.reviews;
+        document.getElementById('count-local').innerText = data.localCount;
+        document.getElementById('count-all').innerText = data.totalCount;
+        document.getElementById('rating-summary').innerHTML = `
+            <span class="text-yellow-400 text-lg">${'★'.repeat(Math.round(data.avgLocal||data.avgAll))}</span>
+            <span class="font-bold">${(data.avgLocal||data.avgAll).toFixed(1)}</span>
+            <span class="text-emerald-400 text-xs bg-emerald-950/50 border border-emerald-800 px-2 py-0.5 rounded-full">
+                ${data.localCount} neighbours within 5 km
+            </span>`;
+        renderReviews();
+    } catch {
+        document.getElementById('reviews-list').innerHTML =
+            `<p class="text-red-400 text-sm">Backend offline — start your server with <code class="bg-slate-800 px-1 rounded">node index.js</code></p>`;
+    }
+}
+
+function setFilter(mode) {
+    filterMode = mode;
+    document.getElementById('pill-local').className = `px-4 py-2 rounded-xl text-sm font-semibold transition ${mode==='local'?'bg-emerald-500 text-slate-950':'bg-slate-800 text-slate-400 hover:text-white'}`;
+    document.getElementById('pill-all').className   = `px-4 py-2 rounded-xl text-sm font-semibold transition ${mode==='all'?'bg-emerald-500 text-slate-950':'bg-slate-800 text-slate-400 hover:text-white'}`;
+    renderReviews();
+}
+
+function renderReviews() {
+    const list = filterMode === 'local' ? allReviews.filter(r => r.distanceKm <= 5) : allReviews;
+    const box = document.getElementById('reviews-list');
+
+    if (!list.length) {
+        box.innerHTML = `<div class="text-center py-10 text-slate-500 text-sm">
+            <i class="fa-solid fa-location-dot text-2xl mb-2 block text-slate-700"></i>
+            No verified neighbours have reviewed this yet. Be the first in your area!
+        </div>`;
+        return;
+    }
+
+    box.innerHTML = list.map(r => {
+        const isLocal = r.distanceKm <= 5;
+        return `
+        <div class="bg-slate-950/60 border ${isLocal?'border-emerald-800/50':'border-slate-800'} rounded-2xl p-5 fade-up">
+            <div class="flex justify-between items-start mb-2 gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-slate-950">
+                        ${r.name.charAt(0)}
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">${r.name}</p>
+                        <p class="text-yellow-400 text-xs">${'★'.repeat(r.rating)}<span class="text-slate-700">${'★'.repeat(5-r.rating)}</span></p>
+                    </div>
+                </div>
+                <span class="text-[10px] whitespace-nowrap px-2.5 py-1 rounded-full font-semibold ${isLocal
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-600/40'
+                    : 'bg-slate-800 text-slate-400 border border-slate-700'}">
+                    <i class="fa-solid fa-location-dot"></i> ${isLocal ? 'Verified Neighbour' : 'Outside area'} · ${r.distanceKm} km
+                </span>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed">${r.comment}</p>
+            <p class="text-[11px] text-slate-600 mt-2">
+                ${r.verified ? '<i class="fa-solid fa-circle-check text-emerald-500"></i> Verified purchase · ' : ''}${r.daysAgo === 0 ? 'Just now' : r.daysAgo + ' days ago'}
+            </p>
+        </div>`;
+    }).join('');
+}
+
+async function submitReview() {
+    const text = document.getElementById('review-text').value.trim();
+    const msg = document.getElementById('review-msg');
+    if (text.length < 5) { msg.className="text-sm mt-3 text-red-400"; msg.innerText="Please write at least a few words."; msg.classList.remove('hidden'); return; }
+
+    await fetch(`${BACKEND_URL}/api/reviews`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ productId: product.id, name: user.name, rating: selectedRating, comment: text, lat: userLat, lng: userLng })
+    });
+
+    document.getElementById('review-text').value = '';
+    msg.className = "text-sm mt-3 text-emerald-400";
+    msg.innerText = "✅ Review posted — your neighbours can now see it!";
+    msg.classList.remove('hidden');
+    loadReviews();
+}
+
+/* ===== RENT ===== */
+function openRentModal() {
+    document.getElementById('modal-name').innerText = product.name;
+    document.getElementById('modal-fee').innerText = rentFee.toFixed(2);
+    document.getElementById('modal-credit').innerText = rentFee.toFixed(2);
+    document.getElementById('rent-modal').classList.remove('hidden');
+}
+function closeRentModal() { document.getElementById('rent-modal').classList.add('hidden'); }
+
+async function confirmRental() {
+    await fetch(`${BACKEND_URL}/api/rentals`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ email:user.email, productId:product.id, productName:product.name, price:product.price })
+    });
+    closeRentModal();
+    checkRental();
+}
+
+async function checkRental() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/rentals?email=${encodeURIComponent(user.email)}&productId=${product.id}`);
+        const { rental } = await res.json();
+        if (!rental) return;
+
+        const daysLeft = Math.max(0, Math.ceil((new Date(rental.endDate) - Date.now()) / 86400000));
+        document.getElementById('rental-banner').classList.remove('hidden');
+        document.getElementById('rental-details').innerHTML =
+            `Return or convert in <strong class="text-white">${daysLeft} day(s)</strong>. Paid <strong class="text-white">$${rental.fee}</strong> — fully credited if you buy this week.`;
+
+        const credited = (product.price - rental.fee).toFixed(2);
+        const line = document.getElementById('rent-credit-line');
+        line.classList.remove('hidden');
+        line.innerHTML = `<i class="fa-solid fa-tag"></i> Your price after rental credit: <strong>$${credited}</strong> (−$${rental.fee})`;
+    } catch {}
+}
+
+/* ===== ADD TO GROUP CART ===== */
+function addToGroupCart() {
+    localStorage.setItem('aura_pending_add', JSON.stringify({ id: product.id }));
+    window.location.href = 'index.html';
+}
+
+initLocation();
+checkRental();
+</script>
+</body>
+</html>

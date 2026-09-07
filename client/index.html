@@ -417,12 +417,36 @@
         if (savedUser) document.getElementById("nav-user-name").innerText = savedUser.name;
 
         const products = [
-            { id:1, brand:"Aura Audio", name:"Aura Noise-Canceling Headphones", category:"Electronics", price:199.99, oldPrice:249.99, rating:4.8, reviews:1284, image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&q=80", co2:"2.1 kg", badge:"Best Seller", tags:["ANC","45h Battery","Passport"] },
-            { id:2, brand:"EcoSmart", name:"EcoSmart Solar Power Bank", category:"Gadgets", price:49.99, oldPrice:69.99, rating:4.6, reviews:842, image:"https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=700&q=80", co2:"0.8 kg", badge:"Eco Pick", tags:["Solar","USB-C","Green"] },
-            { id:3, brand:"BambooWorks", name:"Ergonomic Bamboo Workspace Chair", category:"Home Office", price:289.00, oldPrice:349.00, rating:4.7, reviews:532, image:"https://images.unsplash.com/photo-1580481072645-022f9a6d83d0?w=700&q=80", co2:"5.4 kg", badge:"Premium", tags:["Ergonomic","Bamboo","Rental"] },
-            { id:4, brand:"UrbanCarry", name:"Minimal Waterproof Travel Backpack", category:"Fashion", price:79.99, oldPrice:99.99, rating:4.5, reviews:674, image:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700&q=80", co2:"1.4 kg", badge:"New Arrival", tags:["Waterproof","Travel","Recycled"] },
-            { id:5, brand:"FitAura", name:"Smart Fitness Band Pro", category:"Wearables", price:119.99, oldPrice:149.99, rating:4.4, reviews:1091, image:"https://images.unsplash.com/photo-1576243345690-4e4b79b63288?w=700&q=80", co2:"1.0 kg", badge:"Trending", tags:["Health","Sleep","GPS"] },
-            { id:6, brand:"PureHome", name:"Smart Air Purifier Mini", category:"Home", price:159.99, oldPrice:199.99, rating:4.9, reviews:428, image:"https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=700&q=80", co2:"3.0 kg", badge:"Top Rated", tags:["HEPA","Smart","Silent"] }
+            {
+    id: 2,
+    brand: "EcoSmart",
+    name: "EcoSmart Solar Power Bank",
+    category: "Gadgets",
+    price: 49.99,
+    oldPrice: 69.99,
+    rating: 4.6,
+    reviews: 842,
+    image: "https://images.unsplash.com/photo-1609592424109-dd9892f1b177?auto=format&fit=crop&w=900&q=85",
+    fallbackImage: "https://placehold.co/900x700/e0f2fe/0f766e?text=EcoSmart+Solar+Power+Bank",
+    co2: "0.8 kg",
+    badge: "Eco Pick",
+    tags: ["Solar", "USB-C", "Green"]
+},
+{
+    id: 3,
+    brand: "BambooWorks",
+    name: "Ergonomic Bamboo Workspace Chair",
+    category: "Home Office",
+    price: 289.00,
+    oldPrice: 349.00,
+    rating: 4.7,
+    reviews: 532,
+    image: "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?auto=format&fit=crop&w=900&q=85",
+    fallbackImage: "https://placehold.co/900x700/ecfdf5/065f46?text=Ergonomic+Bamboo+Chair",
+    co2: "5.4 kg",
+    badge: "Premium",
+    tags: ["Ergonomic", "Bamboo", "Rental"]
+},
         ];
 
         let activeCategory = "All", searchQuery = "", sortBy = "featured";
@@ -458,7 +482,12 @@
                 return `
                 <article class="product-card bg-white border border-slate-100 rounded-[1.7rem] overflow-hidden card-shadow group">
                     <div class="relative overflow-hidden bg-slate-100">
-                        <a href="product.html?id=${p.id}"><img src="${p.image}" alt="${p.name}" class="product-img w-full h-64 object-cover"></a>
+                        <a href="product.html?id=${p.id}"><img
+    src="${p.image}"
+    alt="${p.name}"
+    class="product-img w-full h-64 object-cover"
+    onerror="this.onerror=null; this.src='${p.fallbackImage || 'https://placehold.co/900x700/f1f5f9/475569?text=Product+Image'}';"
+/></a>
                         <div class="absolute top-4 left-4 flex gap-2">
                             <span class="bg-slate-900 text-white text-[11px] font-black px-2.5 py-1 rounded-full">${p.badge}</span>
                             <span class="bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">${off}% OFF</span>

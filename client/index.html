@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura | World's Best Social E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-white font-sans min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+                    AURA
+                </span>
+                <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full font-medium">
+                    <i class="fa-solid fa-users text-xs mr-1"></i> Social Buy Enabled
+                </span>
+            </div>
+
+            <!-- Active Room Info & Cart Toggle Button -->
+                        <!-- Active Room Info, Sign In & Cart Toggle Button -->
+            <div class="flex items-center space-x-4">
+                <div id="room-indicator" class="hidden text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-2">
+                    <span>Room: <strong id="current-room-id" class="text-emerald-400">None</strong></span>
+                    <span id="discount-badge" class="bg-emerald-500 text-slate-950 text-[10px] font-bold px-1.5 py-0.5 rounded">0% OFF</span>
+                </div>
+
+                <!-- NEW: Sign In / User Profile Link -->
+                <a id="nav-auth-link" href="auth.html" class="flex items-center gap-2 text-sm bg-slate-800/80 hover:bg-slate-800 border border-slate-700 px-3.5 py-2 rounded-xl text-slate-200 hover:text-emerald-400 transition">
+                    <i class="fa-regular fa-user text-emerald-400"></i>
+                    <span id="nav-user-name">Sign In</span>
+                </a>
+
+                <button onclick="toggleCartDrawer()" class="relative bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Group Cart</span>
+                    <span id="cart-count" class="bg-slate-950 text-emerald-400 text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+                <button onclick="toggleCartDrawer()" class="relative bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Group Cart</span>
+                    <span id="cart-count" class="bg-slate-950 text-emerald-400 text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Storefront Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-1">
+        
+        <!-- Social Buying Banner -->
+        <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-cyan-950 border border-emerald-500/30 rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-people-group text-emerald-400"></i> Don't Shop Alone!
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">
+                    Create a live group cart or join a friend. <strong class="text-emerald-300">2+ people = 10% OFF</strong>, <strong class="text-emerald-300">5+ people = 20% OFF!</strong>
+                </p>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto">
+                <button onclick="createSocialCart()" class="flex-1 md:flex-none bg-emerald-500 text-slate-950 px-5 py-2.5 rounded-xl font-bold hover:bg-emerald-400 transition">
+                    + Create Group Cart
+                </button>
+                <button onclick="joinSocialCartModal()" class="flex-1 md:flex-none bg-slate-800 border border-slate-700 text-slate-200 px-5 py-2.5 rounded-xl font-bold hover:bg-slate-700 transition">
+                    Join via Code
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <h3 class="text-xl font-bold mb-6 text-slate-200">Trending Products</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="product-grid">
+            <!-- Products injected by JavaScript below -->
+        </div>
+    </main>
+
+    <!-- SLIDE-OUT SOCIAL CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Cart Header -->
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <div>
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-users text-emerald-400"></i> Live Social Cart
+                </h3>
+                <p id="drawer-subtitle" class="text-xs text-slate-400">Solo Shopping Mode</p>
+            </div>
+            <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Tiered Discount Progress Bar -->
+        <div class="p-4 bg-slate-800/50 border-b border-slate-800">
+            <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-400">Group Discount Tier</span>
+                <span id="tier-discount-text" class="text-emerald-400 font-bold">0% Discount</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                <div id="discount-progress-bar" class="bg-gradient-to-r from-emerald-400 to-cyan-400 h-2.5 w-0 transition-all duration-500"></div>
+            </div>
+            <p id="discount-hint" class="text-[11px] text-slate-400 mt-2 text-center">
+                Invite 1 friend to unlock <strong>10% OFF</strong> for everyone!
+            </p>
+        </div>
+
+        <!-- Live Members Section -->
+        <div class="px-4 py-3 bg-slate-900 border-b border-slate-800 flex items-center gap-2 overflow-x-auto">
+            <span class="text-xs text-slate-400 font-medium">Shoppers:</span>
+            <div id="active-members-list" class="flex gap-2">
+                <span class="text-xs bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-full text-slate-300">You (Solo)</span>
+            </div>
+        </div>
+
+        <!-- Shared Cart Items -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="cart-items-container">
+            <p class="text-slate-500 text-center text-sm py-12">Your cart is empty. Add items from the shop!</p>
+        </div>
+
+        <!-- Live Chat Box inside Cart -->
+        <div class="border-t border-slate-800 p-3 bg-slate-950">
+            <div class="text-xs font-bold text-slate-400 mb-2 flex justify-between">
+                <span><i class="fa-solid fa-comments text-cyan-400"></i> Group Chat</span>
+                <span class="text-[10px] text-slate-500">Visible to cart members</span>
+            </div>
+            <div id="chat-messages" class="h-24 overflow-y-auto space-y-1 text-xs text-slate-300 mb-2 bg-slate-900 p-2 rounded-lg border border-slate-800">
+                <p class="text-slate-600 italic">Chat with friends while shopping...</p>
+            </div>
+            <div class="flex gap-2">
+                <input id="chat-input" type="text" placeholder="Discuss items..." class="flex-1 bg-slate-900 border border-slate-800 text-xs text-white rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500">
+                <button onclick="sendChatMessage()" class="bg-emerald-500 text-slate-950 text-xs px-3 py-2 rounded-lg font-bold hover:bg-emerald-400">Send</button>
+            </div>
+        </div>
+
+        <!-- Cart Footer Checkout -->
+        <div class="p-4 border-t border-slate-800 bg-slate-950">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-slate-400 text-sm">Subtotal:</span>
+                <span id="cart-subtotal" class="text-white font-medium">$0.00</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-emerald-400 text-sm">Group Discount:</span>
+                <span id="cart-discount-amount" class="text-emerald-400 font-bold">-$0.00</span>
+            </div>
+            <div class="flex justify-between items-center mb-4 text-lg font-bold border-t border-slate-800 pt-2">
+                <span>Total:</span>
+                <span id="cart-final-total" class="text-emerald-400">$0.00</span>
+            </div>
+            <button onclick="goToCheckout()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 py-3 rounded-xl font-bold text-center hover:opacity-95 transition shadow-lg shadow-emerald-500/20">
+    Checkout Together
+</button>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        const socket = io('http://localhost:5000');
+        // Check if user logged in from auth.html
+        const savedUser = JSON.parse(localStorage.getItem('aura_user'));
+let userName = savedUser ? savedUser.name : "User_" + Math.floor(100 + Math.random() * 900);
+
+// Update Navbar button if logged in
+if (savedUser) {
+    document.getElementById('nav-user-name').innerText = savedUser.name;
+}
+        let currentRoomCode = null;
+        let currentCartState = { items: [], members: [], discountPercent: 0 };
+
+        // Dummy Products
+        const products = [
+            { id: 1, name: "Aura Noise-Canceling Headphones", price: 199.99, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", co2: "2.1 kg" },
+            { id: 2, name: "EcoSmart Solar Power Bank", price: 49.99, image: "https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=500&q=80", co2: "0.8 kg" },
+            { id: 3, name: "Ergonomic Bamboo Workspace Chair", price: 289.00, image: "https://images.unsplash.com/photo-1580481072645-022f9a6d83d0?w=500&q=80", co2: "5.4 kg" }
+        ];
+
+        // Render Products
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col">
+                    <img src="${p.image}" class="h-48 w-full object-cover">
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg text-white">${p.name}</h4>
+                                <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded">CO₂: ${p.co2}</span>
+                            </div>
+                            <p class="text-slate-400 text-xl font-extrabold mb-4">$${p.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="w-full bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-slate-700 py-2.5 rounded-xl font-bold transition flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Add to Group Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderProducts();
+
+        // Socket Actions
+        function createSocialCart() {
+            socket.emit('create_cart', { userName });
+        }
+
+        function joinSocialCartModal() {
+            const code = prompt("Enter Room Code (e.g., AURA-1234):");
+            if (code) {
+                socket.emit('join_cart', { roomCode: code.toUpperCase(), userName });
+            }
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!currentRoomCode) {
+                // Auto create a room if user adds item directly
+                socket.emit('create_cart', { userName });
+                setTimeout(() => {
+                    socket.emit('add_to_cart', { roomCode: currentRoomCode, product, userName });
+                }, 300);
+            } else {
+                socket.emit('add_to_cart', { roomCode: currentRoomCode, product, userName });
+            }
+            openCartDrawer();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            if (input.value.trim() && currentRoomCode) {
+                socket.emit('send_chat', { roomCode: currentRoomCode, message: input.value, userName });
+                input.value = '';
+            }
+        }
+
+        // Socket Event Listeners
+        socket.on('cart_created', ({ roomCode, cartState }) => {
+            currentRoomCode = roomCode;
+            updateCartUI(cartState);
+            alert(`Group Cart Created! Share Room Code: ${roomCode} with friends to unlock group discounts.`);
+        });
+
+        socket.on('cart_updated', ({ roomCode, cartState }) => {
+            currentRoomCode = roomCode;
+            updateCartUI(cartState);
+        });
+
+        socket.on('chat_received', (chat) => {
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML += `<p><strong>${chat.userName}:</strong> ${chat.message} <span class="text-[9px] text-slate-500">${chat.time}</span></p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        socket.on('error_message', (msg) => alert(msg));
+
+        // UI Helpers
+        function updateCartUI(state) {
+            currentCartState = state;
+
+            // Room Badges
+            document.getElementById('room-indicator').classList.remove('hidden');
+            document.getElementById('current-room-id').innerText = currentRoomCode;
+            document.getElementById('discount-badge').innerText = `${state.discountPercent}% OFF`;
+            document.getElementById('drawer-subtitle').innerText = `Room Code: ${currentRoomCode}`;
+            document.getElementById('tier-discount-text').innerText = `${state.discountPercent}% Discount Unlocked`;
+
+            // Progress Bar Calculation
+            const memberCount = state.members.length;
+            let progressPercent = memberCount >= 5 ? 100 : memberCount >= 2 ? 50 : 10;
+            document.getElementById('discount-progress-bar').style.width = `${progressPercent}%`;
+
+            if (memberCount === 1) {
+                document.getElementById('discount-hint').innerHTML = `Invite 1 friend to unlock <strong>10% OFF</strong>!`;
+            } else if (memberCount < 5) {
+                document.getElementById('discount-hint').innerHTML = `Invite ${5 - memberCount} more friends to reach <strong>20% OFF</strong>!`;
+            } else {
+                document.getElementById('discount-hint').innerHTML = `🎉 Maximum <strong>20% Group Discount</strong> Unlocked!`;
+            }
+
+            // Render Active Members
+            document.getElementById('active-members-list').innerHTML = state.members.map(m => `
+                <span class="text-xs bg-slate-800 border border-slate-700 px-2 py-1 rounded-full text-emerald-400 font-medium flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${m.name}
+                </span>
+            `).join('');
+
+            // Cart Items
+            document.getElementById('cart-count').innerText = state.items.length;
+            const container = document.getElementById('cart-items-container');
+
+            if (state.items.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-center text-sm py-12">Your group cart is empty.</p>`;
+            } else {
+                container.innerHTML = state.items.map(item => `
+                    <div class="bg-slate-800/60 border border-slate-700/60 p-3 rounded-xl flex gap-3 items-center">
+                        <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h5 class="text-xs font-bold text-white">${item.name}</h5>
+                            <p class="text-xs text-slate-400">$${item.price.toFixed(2)}</p>
+                            <p class="text-[10px] text-emerald-400 italic">Added by ${item.addedBy}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Totals
+            const subtotal = state.items.reduce((sum, item) => sum + item.price, 0);
+            const discount = (subtotal * state.discountPercent) / 100;
+            const finalTotal = subtotal - discount;
+
+            document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-discount-amount').innerText = `-$${discount.toFixed(2)}`;
+            document.getElementById('cart-final-total').innerText = `$${finalTotal.toFixed(2)}`;
+        }
+
+        function toggleCartDrawer() {
+            document.getElementById('cart-drawer').classList.toggle('translate-x-full');
+        }
+
+        function openCartDrawer() {
+            document.getElementById('cart-drawer').classList.remove('translate-x-full');
+        }
+                // Save cart to browser storage and go to checkout page
+        function goToCheckout() {
+            if (currentCartState.items.length === 0) {
+                alert("Your cart is empty! Add some products first.");
+                return;
+            }
+            // Save current cart state so checkout page can read it
+            localStorage.setItem('aura_checkout_cart', JSON.stringify(currentCartState));
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>

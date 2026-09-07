@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura | Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        .glow-orb {
+            filter: blur(80px);
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        .glass {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
+        }
+        .slide-in {
+            animation: slideIn 0.45s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+
+    <!-- Background atmosphere -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="glow-orb absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/20 rounded-full"></div>
+        <div class="glow-orb absolute bottom-0 right-0 w-[28rem] h-[28rem] bg-cyan-500/15 rounded-full" style="animation-delay: -3s;"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_transparent_0%,_#020617_70%)]"></div>
+    </div>
+
+    <div class="relative min-h-screen grid lg:grid-cols-2">
+
+        <!-- LEFT: Brand story (hidden on small screens as stacked hero) -->
+        <section class="relative hidden lg:flex flex-col justify-between p-12 xl:p-16 border-r border-slate-800/60">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <span class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">AURA</span>
+                <span class="text-[10px] uppercase tracking-widest text-emerald-400/80 border border-emerald-500/30 px-2 py-0.5 rounded-full">Next-Gen Commerce</span>
+            </a>
+
+            <div class="max-w-lg">
+                <p class="text-emerald-400 text-sm font-semibold tracking-wide mb-3">SHOP TOGETHER · SAVE THE PLANET · OWN THE PROOF</p>
+                <h1 class="text-5xl xl:text-6xl font-extrabold leading-tight mb-6">
+                    Commerce that feels<br>
+                    <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300 bg-clip-text text-transparent">alive.</span>
+                </h1>
+                <p class="text-slate-400 text-lg leading-relaxed mb-10">
+                    Live social carts. Transparent carbon. Local trust. A digital passport for every product. This isn’t another marketplace — it’s how shopping should have always worked.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Group buying in real time</p>
+                            <p class="text-sm text-slate-500">Invite friends. Unlock 10–20% off together.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Every gram of CO₂ visible</p>
+                            <p class="text-sm text-slate-500">Choose green delivery. Track lifetime impact.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-300">
+                            <i class="fa-solid fa-passport"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Digital Product Passport</p>
+                            <p class="text-sm text-slate-500">Authenticity, warranty, resale history — on-chain ready.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-600">Trusted by early communities · Carbon-aware by design · Built for people, not warehouses</p>
+        </section>
+
+        <!-- RIGHT: Auth card -->
+        <section class="flex items-center justify-center p-6 sm:p-10">
+            <div class="w-full max-w-md glass rounded-3xl p-8 sm:p-10 shadow-2xl shadow-emerald-950/40 slide-in">
+
+                <!-- Mobile logo -->
+                <a href="index.html" class="lg:hidden flex items-center justify-center gap-2 mb-8">
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">AURA</span>
+                </a>
+
+                <!-- Tabs -->
+                <div class="flex bg-slate-900/80 rounded-2xl p-1 mb-8 border border-slate-800">
+                    <button id="tab-login" onclick="switchMode('login')" class="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 transition">
+                        Sign In
+                    </button>
+                    <button id="tab-signup" onclick="switchMode('signup')" class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition">
+                        Create Account
+                    </button>
+                </div>
+
+                <h2 id="form-title" class="text-2xl font-bold mb-1">Welcome back</h2>
+                <p id="form-subtitle" class="text-slate-400 text-sm mb-7">Sign in to your social cart, passports & carbon dashboard.</p>
+
+                <!-- Social buttons -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button type="button" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-500 text-sm font-medium transition">
+                        <i class="fa-brands fa-google text-red-400"></i> Google
+                    </button>
+                    <button type="button" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-500 text-sm font-medium transition">
+                        <i class="fa-brands fa-apple"></i> Apple
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex-1 h-px bg-slate-800"></div>
+                    <span class="text-[11px] uppercase tracking-wider text-slate-500">or continue with email</span>
+                    <div class="flex-1 h-px bg-slate-800"></div>
+                </div>
+
+                <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
+                    <!-- Name (signup only) -->
+                    <div id="name-field" class="hidden">
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Full name</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-user absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                            <input id="name" type="text" placeholder="Alex Rivera"
+                                class="input-glow w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-emerald-500 transition" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Email</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                            <input id="email" type="email" required placeholder="you@aura.shop"
+                                class="input-glow w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-emerald-500 transition" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-1.5">
+                            <label class="text-xs font-medium text-slate-400">Password</label>
+                            <a href="#" class="text-[11px] text-emerald-400 hover:underline" id="forgot-link">Forgot password?</a>
+                        </div>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                            <input id="password" type="password" required minlength="6" placeholder="••••••••"
+                                class="input-glow w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-12 py-3 text-sm outline-none focus:border-emerald-500 transition" />
+                            <button type="button" onclick="togglePassword()" class="absolute right-3 top-3 text-slate-500 hover:text-emerald-400">
+                                <i id="eye-icon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm password (signup) -->
+                    <div id="confirm-field" class="hidden">
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Confirm password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                            <input id="confirm" type="password" placeholder="••••••••"
+                                class="input-glow w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-emerald-500 transition" />
+                        </div>
+                    </div>
+
+                    <label id="terms-row" class="hidden items-start gap-2 text-xs text-slate-400 cursor-pointer">
+                        <input type="checkbox" id="terms" class="mt-0.5 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500" />
+                        I agree to Aura’s Terms, Privacy Policy, and carbon-data usage for my impact dashboard.
+                    </label>
+
+                    <p id="error-box" class="hidden text-sm text-red-400 bg-red-950/40 border border-red-900/50 rounded-lg px-3 py-2"></p>
+                    <p id="success-box" class="hidden text-sm text-emerald-300 bg-emerald-950/40 border border-emerald-800/50 rounded-lg px-3 py-2"></p>
+
+                    <button type="submit" id="submit-btn"
+                        class="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 hover:opacity-95 transition shadow-lg shadow-emerald-500/25">
+                        Sign In
+                    </button>
+                </form>
+
+                <p class="text-center text-xs text-slate-500 mt-6">
+                    By continuing you join a marketplace built on <span class="text-emerald-400">trust, community & transparency</span>.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let mode = 'login';
+
+        function switchMode(next) {
+            mode = next;
+            const isSignup = mode === 'signup';
+
+            document.getElementById('tab-login').className =
+                'flex-1 py-2.5 rounded-xl text-sm font-semibold transition ' +
+                (isSignup ? 'text-slate-400 hover:text-white' : 'bg-emerald-500 text-slate-950');
+            document.getElementById('tab-signup').className =
+                'flex-1 py-2.5 rounded-xl text-sm font-semibold transition ' +
+                (isSignup ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-white');
+
+            document.getElementById('form-title').innerText = isSignup ? 'Create your Aura' : 'Welcome back';
+            document.getElementById('form-subtitle').innerText = isSignup
+                ? 'One account for social carts, green shipping & product passports.'
+                : 'Sign in to your social cart, passports & carbon dashboard.';
+            document.getElementById('submit-btn').innerText = isSignup ? 'Create Account' : 'Sign In';
+            document.getElementById('forgot-link').classList.toggle('hidden', isSignup);
+
+            document.getElementById('name-field').classList.toggle('hidden', !isSignup);
+            document.getElementById('confirm-field').classList.toggle('hidden', !isSignup);
+            document.getElementById('terms-row').classList.toggle('hidden', !isSignup);
+            document.getElementById('terms-row').classList.toggle('flex', isSignup);
+
+            hideMessages();
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            icon.className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+        }
+
+        function hideMessages() {
+            document.getElementById('error-box').classList.add('hidden');
+            document.getElementById('success-box').classList.add('hidden');
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-box');
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('success-box');
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            hideMessages();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value.trim();
+            const confirm = document.getElementById('confirm').value;
+
+            if (mode === 'signup') {
+                if (name.length < 2) return showError('Please enter your full name.');
+                if (password.length < 6) return showError('Password must be at least 6 characters.');
+                if (password !== confirm) return showError('Passwords do not match.');
+                if (!document.getElementById('terms').checked) return showError('Please accept the terms to continue.');
+            }
+
+            // Demo session (replace with real API later)
+            const user = {
+                name: mode === 'signup' ? name : (email.split('@')[0]),
+                email,
+                joinedAt: new Date().toISOString()
+            };
+            localStorage.setItem('aura_user', JSON.stringify(user));
+
+            showSuccess(mode === 'signup'
+                ? 'Account created. Taking you to Aura…'
+                : 'Welcome back. Opening your store…');
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 900);
+        }
+    </script>
+</body>
+</html>
